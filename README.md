@@ -14,9 +14,9 @@ Bingo! You're made it!
 
 ### Further information
 
-If you are `x-platform-ws` in a project with [browserify](http://browserify.org/) or [webpack](https://webpack.js.org/), every will be working fine.
+If you are `x-platform-ws` in a project with [browserify](http://browserify.org/) or [webpack](https://webpack.js.org/), everything will be working fine.
 
-If not, you should add `events` and `buffer` to your dependencies. They are peer dependencies of `x-platform-ws` so you have to install them manually.
+If not, you should add `events` and `buffer` to your dependencies. They are peer dependencies of `x-platform-ws` so you have to install them manually. (Webpack and browserify have them installed and automatically bundled for browsers)
 
 ## Usage
 
