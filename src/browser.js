@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Buffer = require('buffer');
+const { Buffer } = require('buffer');
 
 const callWhenExist = (fn, ...args) => { if (typeof fn === 'function') fn(...args); };
 const synchronize = (src, dst, name, readonly = false) => {
