@@ -1,8 +1,7 @@
 const EventEmitter = require('events');
 const { Buffer } = require('buffer');
 const delegate = require('delegates');
-
-const callWhenExist = (fn, ...args) => { if (typeof fn === 'function') fn(...args); };
+const isCallable = require('is-callable');
 
 class MockWebSocket extends EventEmitter {
     constructor(url, protocols) {
@@ -19,7 +18,7 @@ class MockWebSocket extends EventEmitter {
         this.ws.addEventListener('error', (e) => {
             const error = e.error || new Error('Server error'); // some clients don't have e.error
             this.emit('error', error);
-            callWhenExist(this.onerror, error);
+            if (isCallable(this.onerror)) this.onerror(error);
         });
 
         this.ws.addEventListener('message', (event) => {
@@ -27,7 +26,7 @@ class MockWebSocket extends EventEmitter {
             this.emit('message', transformed);
             const transformedEvent = transformed === event.data ?
                 event : new MessageEvent(event.type, { ...event, data: transformed });
-            callWhenExist(this.onmessage, transformedEvent);
+            if (isCallable(this.onmessage)) this.onmessage(transformedEvent);
         });
 
         this._binaryType = 'nodebuffer';
