@@ -34,6 +34,8 @@ It is almost compatible with the client in the [`ws`](https://github.com/websock
 - The `ping()` and `pong()` methods are not supported in the browser. See [this SO thread](https://stackoverflow.com/questions/10585355/sending-websocket-ping-pong-frame-from-browser) for explanations.
 - The [UNIX domain sockets](https://en.wikipedia.org/wiki/Unix_domain_socket) are not supported in the browser.
 - The `'fragment'` [`binaryType`](https://github.com/websockets/ws/blob/master/doc/ws.md#websocketbinarytype) is not supported on the browser.
+- The `'ping'`, `'pong'`, `'unexpected-response'` and `'upgrade'` events are not supported on the browser.
+- The `send()` method does not take advantage of the `options` and the `callback` is invoked immediately.
 
 For the `ws` api, see [the official docs](https://github.com/websockets/ws/blob/master/doc/ws.md).
 
