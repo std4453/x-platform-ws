@@ -1,21 +1,8 @@
 const EventEmitter = require('events');
 const { Buffer } = require('buffer');
+const delegate = require('delegates');
 
 const callWhenExist = (fn, ...args) => { if (typeof fn === 'function') fn(...args); };
-const synchronize = (src, dst, name, readonly = false) => {
-    const common = {
-        enumerable: true,
-        get() { return src[name]; },
-    };
-    const conf = readonly ? {
-        ...common,
-        writable: false,
-    } : {
-        ...common,
-        set(value) { src[name] = value; }, // eslint-disable-line no-param-reassign
-    };
-    Object.defineProperty(dst, name, conf);
-};
 
 class MockWebSocket extends EventEmitter {
     constructor(url, protocols) {
@@ -28,11 +15,9 @@ class MockWebSocket extends EventEmitter {
         });
 
         this.ws.addEventListener('open', () => this.emit('open'));
-        this.ws.addEventListener('open', () => callWhenExist(this.onopen));
         this.ws.addEventListener('close', ({ code, reason }) => this.emit('close', code, reason));
-        this.ws.addEventListener('close', e => callWhenExist(this.onclose, e));
         this.ws.addEventListener('error', (e) => {
-            const error = e.error || new Error('Server error'); // non-null
+            const error = e.error || new Error('Server error'); // some clients don't have e.error
             this.emit('error', error);
             callWhenExist(this.onerror, error);
         });
@@ -50,12 +35,6 @@ class MockWebSocket extends EventEmitter {
                 });
             callWhenExist(this.onmessage, transformedEvent);
         });
-
-        synchronize(this, this.ws, 'protocol');
-        synchronize(this, this.ws, 'readyState', true);
-        synchronize(this, this.ws, 'url', true);
-        synchronize(this, this.ws, 'bufferedAmount', true);
-        synchronize(this, this.ws, 'extensions');
 
         let binaryType = 'nodebuffer';
         this.ws.binaryType = 'arraybuffer';
@@ -82,13 +61,19 @@ class MockWebSocket extends EventEmitter {
         callWhenExist(callback);
     }
 
-    close(code, reason) {
-        this.ws.close(code, reason);
-    }
-
     terminate() {
         this.close();
     }
 }
+
+delegate(MockWebSocket, 'ws')
+    .access('protocol')
+    .access('extensions')
+    .access('onopen')
+    .access('onclose')
+    .getter('readyState')
+    .getter('url')
+    .getter('bufferedAmount')
+    .method('close');
 
 module.exports = MockWebSocket;
