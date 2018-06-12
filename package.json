@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "A cross-platform wrapper over ws and WebSocket",
   "main": "src/index.js",
+  "browser": "src/browser.js",
   "scripts": {
+    "lint": "eslint",
     "test": "mocha"
   },
   "repository": {
