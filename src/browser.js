@@ -36,18 +36,17 @@ class MockWebSocket extends EventEmitter {
             callWhenExist(this.onmessage, transformedEvent);
         });
 
-        let binaryType = 'nodebuffer';
+        this._binaryType = 'nodebuffer';
         this.ws.binaryType = 'arraybuffer';
-        Object.defineProperty(this, 'binaryType', {
-            enumerable: true,
-            get() {
-                return binaryType;
-            },
-            set(value) {
-                binaryType = value;
-                this.ws.binaryType = value === 'nodebuffer' ? 'arraybuffer' : value;
-            },
-        });
+    }
+
+    get binaryType() {
+        return this._binaryType;
+    }
+
+    set binaryType(value) {
+        this._binaryType = value;
+        this.ws.binaryType = value === 'nodebuffer' ? 'arraybuffer' : value;
     }
 
     transformMessage(data) {
