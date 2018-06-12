@@ -3,15 +3,18 @@ const { Buffer } = require('buffer');
 
 const callWhenExist = (fn, ...args) => { if (typeof fn === 'function') fn(...args); };
 const synchronize = (src, dst, name, readonly = false) => {
-    Object.defineProperty(dst, name, {
+    const common = {
         enumerable: true,
         get() { return src[name]; },
-        ...(readonly ? {
-            writable: false,
-        } : {
-            set(value) { src[name] = value; }, // eslint-disable-line no-param-reassign
-        }),
-    });
+    };
+    const conf = readonly ? {
+        ...common,
+        writable: false,
+    } : {
+        ...common,
+        set(value) { src[name] = value; }, // eslint-disable-line no-param-reassign
+    };
+    Object.defineProperty(dst, name, conf);
 };
 
 class MockWebSocket extends EventEmitter {
