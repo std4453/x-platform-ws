@@ -25,9 +25,12 @@
   },
   "homepage": "https://github.com/std4453/x-platform-ws#readme",
   "devDependencies": {
+    "assert": "^1.4.1",
+    "buffer": "^5.1.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.12.0",
+    "events": "^3.0.0",
     "mocha": "^5.2.0",
     "webdriverio": "^4.12.0"
   },
