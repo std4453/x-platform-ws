@@ -7,12 +7,7 @@ class MockWebSocket extends EventEmitter {
     constructor(url, protocols) {
         super();
 
-        Object.defineProperty(this, 'ws', {
-            value: new WebSocket(url, protocols),
-            writable: false,
-            enumerable: true,
-        });
-
+        this.ws = new WebSocket(url, protocols);
         this.ws.addEventListener('open', () => this.emit('open'));
         this.ws.addEventListener('close', ({ code, reason }) => this.emit('close', code, reason));
         this.ws.addEventListener('error', (e) => {
@@ -20,7 +15,6 @@ class MockWebSocket extends EventEmitter {
             this.emit('error', error);
             if (isCallable(this.onerror)) this.onerror(error);
         });
-
         this.ws.addEventListener('message', (event) => {
             const transformed = this.transformMessage(event.data);
             this.emit('message', transformed);
@@ -48,9 +42,8 @@ class MockWebSocket extends EventEmitter {
     }
 
     send(data, _, callback) {
-        // since Buffers are Uint8Arrays, they can be sent directly
-        this.ws.send(data);
-        callWhenExist(callback);
+        this.ws.send(data); // since Buffers are Uint8Arrays, they can be sent directly
+        if (isCallable(callback)) callback();
     }
 
     terminate() {
