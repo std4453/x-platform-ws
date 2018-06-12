@@ -25,14 +25,8 @@ class MockWebSocket extends EventEmitter {
         this.ws.addEventListener('message', (event) => {
             const transformed = this.transformMessage(event.data);
             this.emit('message', transformed);
-            const transformedEvent = transformed === event.data ? event : new MessageEvent(
-                event.type, {
-                    data: transformed,
-                    origin: event.origin,
-                    lastEventId: event.lastEventId,
-                    source: event.source,
-                    ports: event.ports,
-                });
+            const transformedEvent = transformed === event.data ?
+                event : new MessageEvent(event.type, { ...event, data: transformed });
             callWhenExist(this.onmessage, transformedEvent);
         });
 
